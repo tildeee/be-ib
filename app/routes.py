@@ -76,14 +76,14 @@ def create_card_for_board(board_id):
             "error": "Missing Message"
         }), 400)
 
-    new_card = Card(message=body["message"], likes_count=0, board_id=board.board_id)
+    new_card = Card(message=body["message"], likes_count=0)
     db.session.add(new_card)
     board.cards.append(new_card)
     db.session.commit()
     
     return make_response({"card": {
         "card_id": new_card.card_id,
-        "board_id": board.board_id,
+        "board_id": new_card.board_id,
         "message": new_card.message,
         "likes_count": new_card.likes_count
     }}, 201)
