@@ -83,7 +83,7 @@ def create_card_for_board(board_id):
     
     return make_response({"card": {
         "card_id": new_card.card_id,
-        "board_id": new_card.board_id,
+        "board_id": board.board_id,
         "message": new_card.message,
         "likes_count": new_card.likes_count
     }}, 201)
