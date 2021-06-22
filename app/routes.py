@@ -76,7 +76,7 @@ def create_card_for_board(board_id):
             "error": "Missing Message"
         }), 400)
 
-    new_card = Card(message=body["message"], likes_count=0)
+    new_card = Card(message=body["message"], likes_count=0, board_id=board.board_id)
     db.session.add(new_card)
     board.cards.append(new_card)
     db.session.commit()
