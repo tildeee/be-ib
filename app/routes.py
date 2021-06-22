@@ -59,14 +59,15 @@ def get_cards_for_board(board_id):
     for card in board.cards:
         cards.append({
             "card_id": card.card_id,
-            "message": card.message
+            "message": card.message,
+            "likes_count": card.likes_count
         })
     
     return jsonify(cards)
 
 
 @board_bp.route('/boards/<board_id>/cards', methods=['POST'])
-def create_card_for_bard(board_id):
+def create_card_for_board(board_id):
     board = Board.query.get_or_404(board_id)
 
     body = request.get_json()
@@ -75,7 +76,7 @@ def create_card_for_bard(board_id):
             "error": "Missing Message"
         }), 400)
 
-    new_card = Card(message=body["message"])
+    new_card = Card(message=body["message"], likes_count=0)
     db.session.add(new_card)
     board.cards.append(new_card)
     db.session.commit()
@@ -83,5 +84,24 @@ def create_card_for_bard(board_id):
     return make_response({"card": {
         "card_id": new_card.card_id,
         "board_id": new_card.board_id,
-        "message": new_card.message
+        "message": new_card.message,
+        "likes_count": new_card.likes_count
     }}, 201)
+
+
+@board_bp.route('/boards/<board_id>/cards/<card_id>', methods=['DELETE'])
+def delete_card_for_board(board_id, card_id):
+    card = Card.query.get_or_404(card_id)
+    db.session.delete(card)
+    db.session.commit()
+    return {"details": f'Card {card.card_id} "{card.message}" successfully deleted'}
+
+
+@board_bp.route('/boards/<board_id>/cards/<card_id>/like', methods=['PUT'])
+def plus_one_card_for_board(board_id, card_id):
+    card = Card.query.get_or_404(card_id)
+    if card.likes_count == None:
+        card.likes_count = 0
+    card.likes_count = card.likes_count + 1
+    db.session.commit()
+    return {"details": f'Card {card.card_id} "{card.message}" successfully deleted'}
