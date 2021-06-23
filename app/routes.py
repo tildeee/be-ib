@@ -10,12 +10,14 @@ import requests
 
 board_bp = Blueprint('board_bp', __name__)
 
+
 @board_bp.route('/')
 def index():
     return {
         "name": "Simon Del Rosaasfasdfrio",
         "message": "Hi instructors! :)"
     }
+
 
 @board_bp.route('/boards', methods=['GET'])
 def get_boards():
@@ -29,6 +31,7 @@ def get_boards():
         })
     return jsonify(results)
 
+
 @board_bp.route('/boards', methods=['POST'])
 def create_boards():
     body = request.get_json()
@@ -36,7 +39,7 @@ def create_boards():
         new_board = Board(
             title=body["title"],
             owner=body["owner"])
-        
+
         db.session.add(new_board)
         db.session.commit()
 
@@ -62,7 +65,7 @@ def get_cards_for_board(board_id):
             "message": card.message,
             "likes_count": card.likes_count
         })
-    
+
     return jsonify(cards)
 
 
@@ -80,7 +83,7 @@ def create_card_for_board(board_id):
     db.session.add(new_card)
     board.cards.append(new_card)
     db.session.commit()
-    
+
     return make_response({"card": {
         "card_id": new_card.card_id,
         "board_id": new_card.board_id,
@@ -89,16 +92,16 @@ def create_card_for_board(board_id):
     }}, 201)
 
 
-@board_bp.route('/boards/<board_id>/cards/<card_id>', methods=['DELETE'])
-def delete_card_for_board(board_id, card_id):
+@board_bp.route('/cards/<card_id>', methods=['DELETE'])
+def delete_card_for_board(card_id):
     card = Card.query.get_or_404(card_id)
     db.session.delete(card)
     db.session.commit()
     return {"details": f'Card {card.card_id} "{card.message}" successfully deleted'}
 
 
-@board_bp.route('/boards/<board_id>/cards/<card_id>/like', methods=['PUT'])
-def plus_one_card_for_board(board_id, card_id):
+@board_bp.route('/cards/<card_id>/like', methods=['PUT'])
+def plus_one_card_for_board(card_id):
     card = Card.query.get_or_404(card_id)
     if card.likes_count == None:
         card.likes_count = 0
