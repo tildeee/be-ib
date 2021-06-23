@@ -105,3 +105,11 @@ def plus_one_card_for_board(board_id, card_id):
     card.likes_count = card.likes_count + 1
     db.session.commit()
     return {"details": f'Card {card.card_id} "{card.message}" successfully deleted'}
+
+
+@board_bp.route('/destroy_all', methods=['DELETE'])
+def destroy_all_boards_and_cards():
+    Card.query.delete()
+    Board.query.delete()
+    db.session.commit()
+    return {"details": f'All boards and cards successfully deleted'}
