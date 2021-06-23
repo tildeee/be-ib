@@ -114,5 +114,26 @@ def plus_one_card_for_board(card_id):
 def destroy_all_boards_and_cards():
     Card.query.delete()
     Board.query.delete()
+
+    card_a = Card(message="You're like a cup of tea: green! 😍", likes_count=3)
+    card_b = Card(
+        message="You're strong and you have good taste in computers. 🐶🎉", likes_count=5)
+    card_c = Card(message="Effort won't betray you. 💖", likes_count=3)
+    card_d = Card(
+        message="⭐️✨ Live, laugh, love, Lord of the Rings ⭐️✨", likes_count=0)
+    card_e = Card(
+        message="Did it hurt when you fell? Here's a band-aid and water, and don't forget to check-in and ask for help.",
+        likes_count=1)
+
+    new_board = Board(title="Pick-me-up Quotes", owner="Ada L.")
+    new_board.cards = [card_a, card_b, card_c, card_d, card_e]
+    db.session.add_all([card_a, card_b, card_c, card_d, card_e, new_board])
     db.session.commit()
-    return {"details": f'All boards and cards successfully deleted'}
+    return {
+        "details": f'All boards and cards successfully deleted',
+        "default_board": {
+            "board_id": new_board.board_id,
+            "title": new_board.title,
+            "owner": new_board.owner
+        }
+    }
