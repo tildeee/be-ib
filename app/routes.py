@@ -1,12 +1,7 @@
-from operator import ne
-from flask import Blueprint, request, jsonify, redirect, url_for, make_response
+from flask import Blueprint, request, jsonify, make_response
 from app.models.board import Board
 from app.models.card import Card
 from app import db
-from datetime import datetime
-
-import os
-import requests
 
 board_bp = Blueprint('board_bp', __name__)
 
